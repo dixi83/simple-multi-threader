@@ -116,7 +116,8 @@ class Threader{
      * Get the base path of the application
      * @return string
      */
-    public function getAppBasePath(){
-        return dirname(__DIR__, 4);
+    private function getAppBasePath(){
+        $reflection = new ReflectionClass(ClassLoader::class);
+        return dirname(dirname($reflection->getFileName()),2);
     }
 }
