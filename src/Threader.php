@@ -110,6 +110,48 @@ class Threader{
         return $return;
     }
 
+
+    /**
+     * Kill and/or delete the closure files of a running process using the jobId and pid. This can be used if the started thread is in a endless loop.
+     * @param String $jobId
+     * @param int $pid
+     */
+    public function kill(String $jobId, int $pid)
+    {
+        $command = "kill $pid";
+
+        if(!self::isWindows()){
+            $command = "{$command} > /dev/null 2>&1 & echo $!";
+            shell_exec($command);
+        }
+        elseif(self::isWindows()){
+            $WshShell = new COM("WScript.Shell");
+            $WshShell->Run($command, 0, false);
+        }
+
+        $jobsDir = $this->getAppBasePath()."/".$this->jobsDir;
+
+        if(file_exists($jobsDir."/".$jobId."_closure.ser")){
+            unlink("{$jobsDir}/{$jobId}_closure.ser");
+        }
+        if(file_exists($jobsDir."/".$jobId."_arguments.ser")){
+            unlink("{$jobsDir}/{$jobId}_arguments.ser");
+        }
+    }
+
+    /**
+     * clean up the logs...
+     */
+    public function removeLogs()
+    {
+        $logFiles = glob($this->getAppBasePath()."/".$this->logsDir);
+        foreach ($logFiles as $logFile) {
+            if($logFile != '.gitignore') {
+                unlink($logFile);
+            }
+        }
+    }
+
     /**
      * Check whether the current environement is Windows or not.
      */
