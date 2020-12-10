@@ -1,7 +1,6 @@
 <?php
-use Opis\Closure\SerializableClosure;
-use function Opis\Closure\{serialize as s, unserialize as u};
-require_once(dirname(__DIR__, 4).'/vendor/autoload.php');
+use function Opis\Closure\{unserialize as u};
+require_once(dirname(__DIR__, 3).'/vendor/autoload.php');
 $jobId = $argv[1];
 $jobsDir = $argv[2];
 $logsDir = $argv[3];
@@ -9,7 +8,7 @@ $helperClass = $argv[4];
 $helper = new $helperClass;
 $basePath = $helper->getAppBasePath();
 if(!file_exists("{$basePath}/{$jobsDir}/{$jobId}_closure.ser"))
-	die("Closure file for Job ID: $jobId doesn't exist");
+    die("Closure file for Job ID: $jobId doesn't exist");
 if(!file_exists("{$basePath}/{$jobsDir}/{$jobId}_arguments.ser"))
 	die("Arguments file for Job ID: $jobId doesn't exist");
 try{
