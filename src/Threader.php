@@ -70,10 +70,15 @@ class Threader{
      */
     public function init(){
         $basePath = $this->getAppBasePath();
-        if(!file_exists($basePath."/".$this->jobsDir))
-            mkdir($basePath."/".$this->jobsDir, 0777);
-        if(!file_exists($basePath."/".$this->logsDir))
-            mkdir($basePath."/".$this->logsDir, 0777);
+        if(!file_exists($basePath."/".$this->jobsDir)) {
+            if (!is_link($basePath . "/" . $this->jobsDir)) {
+                mkdir($basePath . "/" . $this->jobsDir, 0777);
+            }
+        }
+        if(!file_exists($basePath."/".$this->logsDir)) {
+            if (!is_link($basePath . "/" . $this->logsDir))
+                mkdir($basePath . "/" . $this->logsDir, 0777);
+        }
     }
 
     /**
