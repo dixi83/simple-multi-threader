@@ -57,6 +57,10 @@ Configurable Options
  
  `$nohup` - Whether to ignore the HUP (hangup) signal in Unix based systems - type: boolean, default = `true`
  
+ `$nice` - Whether to use the nice command to determine the program scheduling, default=false, set the nice level by giving the one a number between -20 and 19 (https://linux.die.net/man/1/nice)
+ 
+ `$returnPid` - if 'returnPid' is set true, an array with the pid and the jobId is returned by the thread() method. Example: `[ 'pid' => 100, 'jobId' => "862060994a125e64989ad3878fd97a52" ]`
+ 
  `$helperClass` - Fully qualified class name of the Helper to be used. - type: string, default =  `"cs\\simplemultithreader\\CommandHelper"`
 
 Any option above can be used to configure the Threader in the below way:
