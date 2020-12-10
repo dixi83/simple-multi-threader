@@ -107,7 +107,8 @@ class Threader{
             $WshShell->Run($command. ' (Get-WmiObject Win32_Process -Filter ProcessId=$PID).ParentProcessId', 0, false);
         }
         $return['jobId'] = $jobId;
-        return $return;
+
+        return $this->returnPid ? $return : $jobId;
     }
 
 
