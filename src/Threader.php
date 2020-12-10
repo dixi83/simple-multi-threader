@@ -95,7 +95,7 @@ class Threader{
     /**
      * Check whether the current environement is Windows or not.
      */
-    public static function isWindows(){
+    private static function isWindows(){
 	return strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
     }
 
@@ -105,7 +105,7 @@ class Threader{
      * @param array $properties
      * @return Threader
      */
-    public static function configure(Threader $object, $properties){
+    private static function configure(Threader $object, array $properties){
         foreach ($properties as $name => $value) {
             $object->$name = $value;
         }
