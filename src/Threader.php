@@ -7,8 +7,11 @@
  */
 namespace cs\simplemultithreader;
 use Closure;
+use COM;
+use Composer\Autoload\ClassLoader;
 use Opis\Closure\SerializableClosure;
-use function Opis\Closure\{serialize as s, unserialize as u};
+use ReflectionClass;
+use function Opis\Closure\{serialize as s};
 
 /**
  * Class Threader
@@ -35,6 +38,16 @@ class Threader{
      * @var boolean Whether to ignore the HUP (hangup) signal in unix based systems
      */
 	public $nohup = true;
+
+	/**
+     * @var boolean|integer Whether to use the nice command to determine the program scheduling, default=false, set the nice level by giving the one a number between -20 and 19 (https://linux.die.net/man/1/nice)
+     */
+	public $nice = false;
+
+    /**
+     * @var boolean if 'returnPid' is set true, an array with the pid and the jobId is returned by the thread() method. Example: [ 'pid' => 100, 'jobId' => "862060994a125e64989ad3878fd97a52" ]
+     */
+    public $returnPid = false;
 
     /**
      * @var string Fully qualified class name of the Helper to be used
@@ -77,16 +90,16 @@ class Threader{
         $command = "php '".str_replace('\\', '/', __DIR__)."/thread.php' '{$jobId}' '{$this->jobsDir}' '{$this->logsDir}' '{$this->helperClass}'";
 
         if(!self::isWindows()){
-            $command = ($this->nohup? "nohup " : "") . "{$command} > /dev/null 2>&1 & echo $!";
+            $command = ($this->nice !== false? "nice -n$this->nice " : "") . ($this->nohup? "nohup " : "") . "{$command} > /dev/null 2>&1 & echo $!";
             $pid = shell_exec($command);
             if ($pid!==null) {
                 $result = explode("\n", $pid);
-                $return['pid'] = $result[0];
+                $return['pid'] = intval($result[0]);
             }
         }
         elseif(self::isWindows()){
-            $WshShell = new \COM("WScript.Shell");
-            $WshShell->Run($command, 0, false);
+            $WshShell = new COM("WScript.Shell");
+            $WshShell->Run($command. ' (Get-WmiObject Win32_Process -Filter ProcessId=$PID).ParentProcessId', 0, false);
         }
         $return['jobId'] = $jobId;
         return $return;
