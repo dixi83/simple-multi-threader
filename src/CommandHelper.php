@@ -7,6 +7,9 @@
  */
 namespace cs\simplemultithreader;
 
+use Composer\Autoload\ClassLoader;
+use ReflectionClass;
+
 /**
  * Class CommandHelper
  * @package codespede\simple-multi-threader
@@ -59,7 +62,8 @@ class CommandHelper
      * @return string
      */
 	public function getAppBasePath(){
-		return dirname(__DIR__, 4);
+        $reflection = new ReflectionClass(ClassLoader::class);
+        return dirname(dirname($reflection->getFileName()),2);
 	}
 
 	/**
