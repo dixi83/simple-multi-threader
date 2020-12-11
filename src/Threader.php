@@ -145,11 +145,9 @@ class Threader{
      */
     public function removeLogs()
     {
-        $logFiles = glob($this->getAppBasePath()."/".$this->logsDir);
+        $logFiles = glob($this->getAppBasePath()."/".$this->logsDir."/*.log");
         foreach ($logFiles as $logFile) {
-            if($logFile != '.gitignore') {
-                unlink($logFile);
-            }
+            unlink($logFile);
         }
     }
 
