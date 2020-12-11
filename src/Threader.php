@@ -95,7 +95,7 @@ class Threader{
         $command = "php '".str_replace('\\', '/', __DIR__)."/thread.php' '{$jobId}' '{$this->jobsDir}' '{$this->logsDir}' '{$this->helperClass}'";
 
         if(!self::isWindows()){
-            $command = ($this->nice !== false? "nice -n$this->nice " : "") . ($this->nohup? "nohup " : "") . "{$command} > /dev/null 2>&1 & echo $!";
+            $command = ($this->nice !== false? "ionice -c1 -n0 nice -n$this->nice " : "") . ($this->nohup? "nohup " : "") . "{$command} > /dev/null 2>&1 & echo $!";
             $pid = shell_exec($command);
             if ($pid!==null) {
                 $result = explode("\n", $pid);
