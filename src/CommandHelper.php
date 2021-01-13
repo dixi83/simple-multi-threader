@@ -31,12 +31,15 @@ class CommandHelper
 	public function executeLaravelBootstrap(){
 		$app = require_once $this->getAppBasePath().'/bootstrap/app.php';
 		$kernel = $app->make(\Illuminate\Contracts\Console\Kernel::class);
-		try{
-		$status = $kernel->handle(
-		    $input = new \Symfony\Component\Console\Input\ArgvInput,
+
+        try {
+		$kernel->handle(
+		    $input = new \Symfony\Component\Console\Input\ArgvInput([]),
 		    new \Symfony\Component\Console\Output\ConsoleOutput
 		);
-		}catch(\Exception $e){}
+		} catch(\Exception $e) {
+            echo "";
+        }
 	}
 
 	/**

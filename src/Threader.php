@@ -72,19 +72,19 @@ class Threader{
         $basePath = $this->getAppBasePath();
         if(!file_exists($basePath."/".$this->jobsDir)) {
             if (!is_link($basePath . "/" . $this->jobsDir)) {
-                mkdir($basePath . "/" . $this->jobsDir, 0777);
+                mkdir($basePath . "/" . $this->jobsDir);
             }
         }
         if(!file_exists($basePath."/".$this->logsDir)) {
             if (!is_link($basePath . "/" . $this->logsDir))
-                mkdir($basePath . "/" . $this->logsDir, 0777);
+                mkdir($basePath . "/" . $this->logsDir);
         }
     }
 
     /**
      * Execute the given closure in a separate process.
      * @param Closure $closure
-     * @return array
+     * @return string|array
      */
     public function thread(Closure $closure){
         $jobId = md5(uniqid(rand(), true));
@@ -92,7 +92,7 @@ class Threader{
         file_put_contents("{$jobsDir}/{$jobId}_closure.ser", serialize(new SerializableClosure($closure)));
         file_put_contents("{$jobsDir}/{$jobId}_arguments.ser", s($this->arguments));
 
-        $command = "php '".str_replace('\\', '/', __DIR__)."/thread.php' '{$jobId}' '{$this->jobsDir}' '{$this->logsDir}' '{$this->helperClass}'";
+        $command = "php '".str_replace('\\', '/', __DIR__)."/.php' '{$jobId}' '{$this->jobsDir}' '{$this->logsDir}' '{$this->helperClass}'";
 
         if(!self::isWindows()){
             $command = ($this->nice !== false? "ionice -c1 -n0 nice -n$this->nice " : "") . ($this->nohup? "nohup " : "") . "{$command} > /dev/null 2>&1 & echo $!";
@@ -154,8 +154,9 @@ class Threader{
     /**
      * Check whether the current environement is Windows or not.
      */
-    private static function isWindows(){
-	return strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+    private static function isWindows(): bool
+    {
+	    return strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
     }
 
     /**
@@ -164,7 +165,8 @@ class Threader{
      * @param array $properties
      * @return Threader
      */
-    private static function configure(Threader $object, array $properties){
+    private static function configure(Threader $object, array $properties): Threader
+    {
         foreach ($properties as $name => $value) {
             $object->$name = $value;
         }
@@ -175,7 +177,8 @@ class Threader{
      * Get the base path of the application
      * @return string
      */
-    private function getAppBasePath(){
+    private function getAppBasePath(): string
+    {
         $reflection = new ReflectionClass(ClassLoader::class);
         return dirname(dirname($reflection->getFileName()),2);
     }

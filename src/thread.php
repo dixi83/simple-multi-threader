@@ -12,12 +12,12 @@ if(!file_exists("{$basePath}/{$jobsDir}/{$jobId}_closure.ser"))
 if(!file_exists("{$basePath}/{$jobsDir}/{$jobId}_arguments.ser"))
 	die("Arguments file for Job ID: $jobId doesn't exist");
 try{
-	$helper->bootstrap();
+    $helper->bootstrap();
 	$wrapper = unserialize(file_get_contents("{$basePath}/{$jobsDir}/{$jobId}_closure.ser"));
 	$arguments = u(file_get_contents("{$basePath}/{$jobsDir}/{$jobId}_arguments.ser"));
-	file_put_contents("{$basePath}/{$logsDir}/smt_{$jobId}.log", $wrapper($arguments));
-}catch(\Exception $e){
-	file_put_contents("{$basePath}/{$logsDir}/smt_{$jobId}_error.log", "Caught Exception at ".date('Y-m-d H:i:s').": ".$e->getMessage()." at line: ".$e->getLine()." on file: ".$e->getFile().". Stack trace: ".$helper::getExceptionTraceAsString($e));
+	file_put_contents("{$basePath}/{$logsDir}/smt_{$jobId}.log", $wrapper($arguments), FILE_APPEND);
+}catch(Exception $e){
+	file_put_contents("{$basePath}/{$logsDir}/smt_{$jobId}_error.log", "Caught Exception at ".date('Y-m-d H:i:s').": ".$e->getMessage()." at line: ".$e->getLine()." on file: ".$e->getFile().". Stack trace: ".$helper::getExceptionTraceAsString($e),FILE_APPEND);
 }
 //garbage collection..
 unlink("{$basePath}/{$jobsDir}/{$jobId}_closure.ser");
